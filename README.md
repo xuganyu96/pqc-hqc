@@ -37,6 +37,7 @@
 - **A C compiler** (GCC ≥ 11, Clang, etc.) with C11 support
 - **Ninja** or **Make** (or another CMake generator)
 - **clang-format** for code formatting
+- **NTL + GMP** (optional) for GF2X verification unit tests; missing deps will skip those tests.
 
 # Building & Testing
 
@@ -99,4 +100,3 @@ and will fail if any file deviates from the project style.
 cmake --build build-<arch> --target clang-format        # rewrites files in-place
 cmake --build build-<arch> --target check-format        # just checks, no changes
 ```
-

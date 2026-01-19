@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(hqc_unit_tests C)
+project(hqc_unit_tests C CXX)
 
 enable_testing()
 
@@ -13,11 +13,14 @@ if(NOT DEFINED VARIANTS)
     message(FATAL_ERROR "VARIANTS (e.g. \"hqc-1;hqc-3;hqc-5\") must be set by tests/CMakeLists.txt")
 endif()
 
+option(HQC_ENABLE_NTL_TESTS "Enable NTL verification tests" ON)
+
 set(TESTS_DIR     ${CMAKE_SOURCE_DIR}/tests/unit)
 set(GF_TEST_SRC   ${TESTS_DIR}/test_gf.c)
 set(RS_TEST_SRC   ${TESTS_DIR}/test_reed_solomon.c)
 set(VEC_TEST_SRC  ${TESTS_DIR}/test_vector.c)
 set(MAIN_TEST_SRC ${TESTS_DIR}/tests_main.c)
+set(GF2X_NTL_SRC  ${TESTS_DIR}/test_vect_mul.cpp)
 
 set(COMMON_INCLUDES
         ${CMAKE_SOURCE_DIR}/src/common
@@ -25,6 +28,20 @@ set(COMMON_INCLUDES
         ${CMAKE_SOURCE_DIR}/tests/external/munit
         ${CMAKE_SOURCE_DIR}/tests
 )
+
+set(HQC_NTL_FOUND OFF)
+if(HQC_ENABLE_NTL_TESTS)
+    find_path(NTL_INCLUDE_DIR NAMES NTL/GF2X.h)
+    find_library(NTL_LIBRARY NAMES ntl)
+    find_library(GMP_LIBRARY NAMES gmp)
+
+    if(NOT NTL_INCLUDE_DIR OR NOT NTL_LIBRARY OR NOT GMP_LIBRARY)
+        message(WARNING "NTL/GMP not found. NTL-based tests will be skipped. Install NTL/GMP or set HQC_ENABLE_NTL_TESTS=OFF to silence this.")
+        set(HQC_NTL_FOUND OFF)
+    else()
+        set(HQC_NTL_FOUND ON)
+    endif()
+endif()
 
 foreach(param_variant IN LISTS VARIANTS)
     string(REPLACE "-" "_" safe_param ${param_variant})
@@ -50,12 +67,17 @@ foreach(param_variant IN LISTS VARIANTS)
         )
     endif()
 
-    add_executable(${exe_name}
+    set(unit_sources
             ${GF_TEST_SRC}
             ${RS_TEST_SRC}
             ${VEC_TEST_SRC}
             ${MAIN_TEST_SRC}
     )
+    if(HQC_NTL_FOUND)
+        list(APPEND unit_sources ${GF2X_NTL_SRC})
+    endif()
+
+    add_executable(${exe_name} ${unit_sources})
 
     target_link_libraries(${exe_name} PRIVATE
             munit
@@ -73,6 +95,29 @@ foreach(param_variant IN LISTS VARIANTS)
             ${COMMON_INCLUDES}
             ${PARAM_INCLUDES}
     )
+
+    if(HQC_NTL_FOUND)
+        target_include_directories(${exe_name} PRIVATE
+                ${NTL_INCLUDE_DIR}
+        )
+        target_link_libraries(${exe_name} PRIVATE
+                ${NTL_LIBRARY}
+                ${GMP_LIBRARY}
+        )
+        target_compile_definitions(${exe_name} PRIVATE
+                HQC_HAVE_NTL=1
+        )
+        set_target_properties(${exe_name} PROPERTIES
+                CXX_STANDARD 17
+                CXX_STANDARD_REQUIRED ON
+                CXX_EXTENSIONS OFF
+        )
+        if(HQC_ARCH STREQUAL "x86_64")
+            target_compile_options(${exe_name} PRIVATE
+                    -mavx -mavx2 -mbmi -mpclmul
+            )
+        endif()
+    endif()
 
     add_test(NAME ${exe_name} COMMAND ${exe_name})
     set_tests_properties(${exe_name} PROPERTIES LABELS "unit")

@@ -7,9 +7,15 @@
 extern MunitTest gf_tests[];
 extern MunitTest rs_tests[];
 extern MunitTest vector_tests[];
+#ifdef HQC_HAVE_NTL
+extern MunitTest gf2x_ntl_tests[];
+#endif
 
 static MunitSuite nested_suites[] = {MUNIT_LEAF_ONCE("galois field", gf_tests),
                                      MUNIT_LEAF_ONCE("reed solomon", rs_tests), MUNIT_LEAF_ONCE("vector", vector_tests),
+#ifdef HQC_HAVE_NTL
+                                     MUNIT_LEAF_ONCE("gf2x", gf2x_ntl_tests),
+#endif
                                      MUNIT_SUITE_END};
 
 static MunitSuite main_suite = MUNIT_TOP_SUITE("unit", nested_suites);

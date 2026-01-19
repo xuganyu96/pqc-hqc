@@ -85,7 +85,9 @@ elseif(HQC_SANITIZER STREQUAL "UBSAN")
     add_link_options(-fsanitize=undefined)
 endif()
 
-add_compile_options(${HQC_C_FLAGS})
+foreach(hqc_c_flag IN LISTS HQC_C_FLAGS)
+    add_compile_options($<$<COMPILE_LANGUAGE:C>:${hqc_c_flag}>)
+endforeach()
 
 # -----------------------------------------------------------------------------
 # BUILD SUBDIRECTORIES
