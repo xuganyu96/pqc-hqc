@@ -69,35 +69,41 @@ static inline uint32_t barrett_reduce(uint32_t x) {
  * @param[in]     weight  Desired Hamming weight.
  */
 void vect_generate_random_support1(shake256_xof_ctx *ctx, uint32_t *support, uint16_t weight) {
-    size_t random_bytes_size = 3 * weight;
-    uint8_t rand_bytes[3 * PARAM_OMEGA_R] = {0};
-    uint8_t inc;
-    size_t i, j;
+    uint8_t rand_buffer[3 * PARAM_OMEGA] = {0};
+    size_t rand_buffer_pos = 0;
+    size_t rand_buffer_size = 3 * PARAM_OMEGA;
+    uint32_t candidate = 0;
 
-    i = 0;
-    j = random_bytes_size;
-    while (i < weight) {
-        do {
-            if (j == random_bytes_size) {
-                xof_get_bytes(ctx, rand_bytes, random_bytes_size);
-                j = 0;
-            }
+    xof_get_bytes(ctx, rand_buffer, sizeof(rand_buffer));
 
-            support[i] = ((uint32_t)rand_bytes[j++]) << 16;
-            support[i] |= ((uint32_t)rand_bytes[j++]) << 8;
-            support[i] |= rand_bytes[j++];
+    for (size_t i = 0; i < weight;) {
+        if (rand_buffer_pos >= rand_buffer_size) {
+            rand_buffer_size = 3 * (size_t)(weight - i);
+            xof_get_bytes(ctx, rand_buffer, (uint32_t)rand_buffer_size);
+            rand_buffer_pos = 0;
+        }
 
-        } while (support[i] >= UTILS_REJECTION_THRESHOLD);
+        candidate = (uint32_t)rand_buffer[rand_buffer_pos] | ((uint32_t)rand_buffer[rand_buffer_pos + 1] << 8) |
+                    ((uint32_t)rand_buffer[rand_buffer_pos + 2] << 16);
+        rand_buffer_pos += 3;
 
-        support[i] = barrett_reduce(support[i]);
+        if (candidate >= UTILS_REJECTION_THRESHOLD) {
+            continue;
+        }
+        candidate = barrett_reduce(candidate);
 
-        inc = 1;
-        for (size_t k = 0; k < i; k++) {
-            if (support[k] == support[i]) {
-                inc = 0;
+        int is_position_available = 1;
+        for (size_t j = 0; j < i; j++) {
+            if (candidate == support[j]) {
+                is_position_available = 0;
+                break;
             }
         }
-        i += inc;
+
+        if (is_position_available == 1) {
+            support[i] = candidate;
+            i++;
+        }
     }
 }
 

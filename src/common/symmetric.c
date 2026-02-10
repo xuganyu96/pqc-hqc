@@ -72,17 +72,7 @@ void xof_init(shake256_xof_ctx *xof_ctx, const uint8_t *seed, uint32_t seed_size
  * The context must have been initialized beforehand using `xof_init()`.
  */
 void xof_get_bytes(shake256_xof_ctx *xof_ctx, uint8_t *output, uint32_t output_size) {
-    const uint8_t bsize = sizeof(uint64_t);
-    const uint8_t remainder = output_size % bsize;
-    uint8_t tmp[sizeof(uint64_t)];
-    shake256_inc_squeeze(output, output_size - remainder, xof_ctx);
-    if (remainder != 0) {
-        shake256_inc_squeeze(tmp, bsize, xof_ctx);
-        output += output_size - remainder;
-        for (uint8_t i = 0; i < remainder; i++) {
-            output[i] = tmp[i];
-        }
-    }
+    shake256_inc_squeeze(output, output_size, xof_ctx);
 }
 
 /**

@@ -33,6 +33,8 @@
 #include <immintrin.h>
 #endif
 
+static inline uint32_t barrett_reduce(uint32_t x);
+
 /** @brief Compute Hamming weight over an array of 64-bit words. */
 static uint32_t hamming_weight_u64(const uint64_t *v, size_t len) {
     uint32_t wt = 0;
@@ -142,16 +144,18 @@ static MunitResult test_vect_fixed_weight_ref_omega(const MunitParameter params[
     (void)params;
     (void)data;
 
-    uint8_t seed[SEED_BYTES];
-    munit_rand_memory(SEED_BYTES, seed);
+    for (size_t i = 0; i < 100; i++) {
+        uint8_t seed[SEED_BYTES];
+        munit_rand_memory(SEED_BYTES, seed);
 
-    shake256_xof_ctx ctx = {0};
-    xof_init(&ctx, seed, SEED_BYTES);
+        shake256_xof_ctx ctx = {0};
+        xof_init(&ctx, seed, SEED_BYTES);
 
-    uint64_t v[VEC_N_SIZE_64] = {0};
-    vect_sample_fixed_weight1(&ctx, v, PARAM_OMEGA);
+        uint64_t v[VEC_N_SIZE_64] = {0};
+        vect_sample_fixed_weight1(&ctx, v, PARAM_OMEGA);
 
-    munit_assert_uint32(hamming_weight_u64(v, VEC_N_SIZE_64), ==, PARAM_OMEGA);
+        munit_assert_uint32(hamming_weight_u64(v, VEC_N_SIZE_64), ==, PARAM_OMEGA);
+    }
     return MUNIT_OK;
 }
 
@@ -162,16 +166,18 @@ static MunitResult test_vect_fixed_weight_ref_omegar(const MunitParameter params
     (void)params;
     (void)data;
 
-    uint8_t seed[SEED_BYTES];
-    munit_rand_memory(SEED_BYTES, seed);
+    for (size_t i = 0; i < 100; i++) {
+        uint8_t seed[SEED_BYTES];
+        munit_rand_memory(SEED_BYTES, seed);
 
-    shake256_xof_ctx ctx = {0};
-    xof_init(&ctx, seed, SEED_BYTES);
+        shake256_xof_ctx ctx = {0};
+        xof_init(&ctx, seed, SEED_BYTES);
 
-    uint64_t v[VEC_N_SIZE_64] = {0};
-    vect_sample_fixed_weight2(&ctx, v, PARAM_OMEGA_R);
+        uint64_t v[VEC_N_SIZE_64] = {0};
+        vect_sample_fixed_weight2(&ctx, v, PARAM_OMEGA_R);
 
-    munit_assert_uint32(hamming_weight_u64(v, VEC_N_SIZE_64), ==, PARAM_OMEGA_R);
+        munit_assert_uint32(hamming_weight_u64(v, VEC_N_SIZE_64), ==, PARAM_OMEGA_R);
+    }
     return MUNIT_OK;
 }
 
@@ -186,22 +192,24 @@ static MunitResult test_vect_fixed_weight_avx2_omega(const MunitParameter params
     (void)params;
     (void)data;
 
-    uint8_t seed[SEED_BYTES];
-    munit_rand_memory(SEED_BYTES, seed);
-
-    shake256_xof_ctx ctx = {0};
-    xof_init(&ctx, seed, SEED_BYTES);
-
     static __m256i v256[VEC_N_256_NUM_WORDS];
+    for (size_t i = 0; i < 100; i++) {
+        uint8_t seed[SEED_BYTES];
+        munit_rand_memory(SEED_BYTES, seed);
+
+        shake256_xof_ctx ctx = {0};
+        xof_init(&ctx, seed, SEED_BYTES);
+
 #ifdef __STDC_LIB_EXT1__
-    memset_s(v256, 0, (VEC_N_256_NUM_WORDS) * sizeof(__m256i));
+        memset_s(v256, 0, (VEC_N_256_NUM_WORDS) * sizeof(__m256i));
 #else
-    memset(v256, 0, (VEC_N_256_NUM_WORDS) * sizeof(__m256i));
+        memset(v256, 0, (VEC_N_256_NUM_WORDS) * sizeof(__m256i));
 #endif
 
-    vect_sample_fixed_weight1(&ctx, v256, PARAM_OMEGA);
+        vect_sample_fixed_weight1(&ctx, v256, PARAM_OMEGA);
 
-    munit_assert_uint32(hamming_weight_u64((const uint64_t *)v256, VEC_N_SIZE_64), ==, PARAM_OMEGA);
+        munit_assert_uint32(hamming_weight_u64((const uint64_t *)v256, VEC_N_SIZE_64), ==, PARAM_OMEGA);
+    }
     return MUNIT_OK;
 }
 
@@ -212,25 +220,146 @@ static MunitResult test_vect_fixed_weight_avx2_omegar(const MunitParameter param
     (void)params;
     (void)data;
 
-    uint8_t seed[SEED_BYTES];
-    munit_rand_memory(SEED_BYTES, seed);
-
-    shake256_xof_ctx ctx = {0};
-    xof_init(&ctx, seed, SEED_BYTES);
-
     static __m256i v256[VEC_N_256_NUM_WORDS];
-#ifdef __STDC_LIB_EXT1__
-    memset_s(v256, 0, (VEC_N_256_NUM_WORDS) * sizeof(__m256i));
-#else
-    memset(v256, 0, (VEC_N_256_NUM_WORDS) * sizeof(__m256i));
-#endif
-    vect_sample_fixed_weight2(&ctx, v256, PARAM_OMEGA_R);
+    for (size_t i = 0; i < 100; i++) {
+        uint8_t seed[SEED_BYTES];
+        munit_rand_memory(SEED_BYTES, seed);
 
-    munit_assert_uint32(hamming_weight_u64((const uint64_t *)v256, VEC_N_SIZE_64), ==, PARAM_OMEGA_R);
+        shake256_xof_ctx ctx = {0};
+        xof_init(&ctx, seed, SEED_BYTES);
+
+#ifdef __STDC_LIB_EXT1__
+        memset_s(v256, 0, (VEC_N_256_NUM_WORDS) * sizeof(__m256i));
+#else
+        memset(v256, 0, (VEC_N_256_NUM_WORDS) * sizeof(__m256i));
+#endif
+        vect_sample_fixed_weight2(&ctx, v256, PARAM_OMEGA_R);
+
+        munit_assert_uint32(hamming_weight_u64((const uint64_t *)v256, VEC_N_SIZE_64), ==, PARAM_OMEGA_R);
+    }
     return MUNIT_OK;
 }
 
 #endif /* HQC_X86_IMPL */
+
+/**
+ * @brief Local copy of reference vect_generate_random_support1().
+ */
+static void ref_vect_generate_random_support1_local(shake256_xof_ctx *ctx, uint32_t *support, uint16_t weight) {
+    uint8_t rand_bytes[3] = {0};
+    uint32_t candidate = 0;
+
+    for (size_t i = 0; i < weight;) {
+        xof_get_bytes(ctx, rand_bytes, 3);
+        candidate = (uint32_t)rand_bytes[0] | ((uint32_t)rand_bytes[1] << 8) | ((uint32_t)rand_bytes[2] << 16);
+
+        if (candidate >= UTILS_REJECTION_THRESHOLD) {
+            continue;
+        }
+        candidate = barrett_reduce(candidate);
+
+        int is_position_available = 1;
+        for (size_t j = 0; j < i; j++) {
+            if (candidate == support[j]) {
+                is_position_available = 0;
+                break;
+            }
+        }
+
+        if (is_position_available == 1) {
+            support[i] = candidate;
+            i++;
+        }
+    }
+}
+
+/**
+ * @brief Local copy of AVX2 vect_generate_random_support1() buffered logic.
+ */
+static void avx2_vect_generate_random_support1_local(shake256_xof_ctx *ctx, uint32_t *support, uint16_t weight) {
+    uint8_t rand_buffer[3 * PARAM_OMEGA] = {0};
+    size_t rand_buffer_pos = 0;
+    size_t rand_buffer_size = 3 * PARAM_OMEGA;
+    uint32_t candidate = 0;
+
+    xof_get_bytes(ctx, rand_buffer, sizeof(rand_buffer));
+
+    for (size_t i = 0; i < weight;) {
+        if (rand_buffer_pos >= rand_buffer_size) {
+            rand_buffer_size = 3 * (size_t)(weight - i);
+            xof_get_bytes(ctx, rand_buffer, (uint32_t)rand_buffer_size);
+            rand_buffer_pos = 0;
+        }
+
+        candidate = (uint32_t)rand_buffer[rand_buffer_pos] | ((uint32_t)rand_buffer[rand_buffer_pos + 1] << 8) |
+                    ((uint32_t)rand_buffer[rand_buffer_pos + 2] << 16);
+        rand_buffer_pos += 3;
+
+        if (candidate >= UTILS_REJECTION_THRESHOLD) {
+            continue;
+        }
+        candidate = barrett_reduce(candidate);
+
+        int is_position_available = 1;
+        for (size_t j = 0; j < i; j++) {
+            if (candidate == support[j]) {
+                is_position_available = 0;
+                break;
+            }
+        }
+
+        if (is_position_available == 1) {
+            support[i] = candidate;
+            i++;
+        }
+    }
+}
+
+/**
+ * @brief Simulate keygen support draws from one XOF stream: first y then x.
+ */
+static void assert_support1_y_then_x_equal(const uint8_t seed[SEED_BYTES]) {
+    shake256_xof_ctx ref_ctx = {0};
+    shake256_xof_ctx avx_ctx = {0};
+    xof_init(&ref_ctx, seed, SEED_BYTES);
+    xof_init(&avx_ctx, seed, SEED_BYTES);
+
+    uint32_t ref_y[PARAM_OMEGA] = {0};
+    uint32_t avx_y[PARAM_OMEGA] = {0};
+    ref_vect_generate_random_support1_local(&ref_ctx, ref_y, PARAM_OMEGA);
+    avx2_vect_generate_random_support1_local(&avx_ctx, avx_y, PARAM_OMEGA);
+    munit_assert_memory_equal(PARAM_OMEGA * sizeof(uint32_t), ref_y, avx_y);
+
+    uint32_t ref_x[PARAM_OMEGA] = {0};
+    uint32_t avx_x[PARAM_OMEGA] = {0};
+    ref_vect_generate_random_support1_local(&ref_ctx, ref_x, PARAM_OMEGA);
+    avx2_vect_generate_random_support1_local(&avx_ctx, avx_x, PARAM_OMEGA);
+    munit_assert_memory_equal(PARAM_OMEGA * sizeof(uint32_t), ref_x, avx_x);
+
+    /* Stream must remain aligned after y then x draws. */
+    uint8_t ref_next[32] = {0};
+    uint8_t avx_next[32] = {0};
+    xof_get_bytes(&ref_ctx, ref_next, sizeof(ref_next));
+    xof_get_bytes(&avx_ctx, avx_next, sizeof(avx_next));
+    munit_assert_memory_equal(sizeof(ref_next), ref_next, avx_next);
+}
+
+/**
+ * @brief Equivalence on random seeds for normal execution profiles.
+ */
+static MunitResult test_vect_support1_ref_avx2_yx_random(const MunitParameter params[], void *data) {
+    (void)params;
+    (void)data;
+
+    const size_t iters = 1000;
+    for (size_t i = 0; i < iters; i++) {
+        uint8_t seed[SEED_BYTES];
+        munit_rand_memory(SEED_BYTES, seed);
+        assert_support1_y_then_x_equal(seed);
+    }
+
+    return MUNIT_OK;
+}
 
 /**
  * @brief Constant-time Barrett reduction modulo `PARAM_N`.
@@ -370,4 +499,4 @@ MunitTest vector_tests[] = {
     MUNIT_TEST_ENTRY("vect PARAM_OMEGA", test_vect_fixed_weight_avx2_omega),
     MUNIT_TEST_ENTRY("vect PARAM_OMEGA_R", test_vect_fixed_weight_avx2_omegar),
 #endif
-    MUNIT_TEST_END};
+    MUNIT_TEST_ENTRY("vect support1 yx random", test_vect_support1_ref_avx2_yx_random), MUNIT_TEST_END};
