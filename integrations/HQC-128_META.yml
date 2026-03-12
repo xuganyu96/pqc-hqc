@@ -1,0 +1,101 @@
+name: HQC-128
+type: kem
+claimed-nist-level: 1
+claimed-security: IND-CCA2
+length-public-key: 2241
+length-ciphertext: 4433
+length-secret-key: 2321
+length-shared-secret: 32
+# TODO: not sure
+# length-keypair-seed: 0
+# length-encaps-seed: 0
+# nistkat-sha256: ???
+# testvectors-sha256: ???
+principal-submitters:
+- Philippe Gaborit
+auxiliary-submitters:
+- Carlos Aguilar-Melchor
+- Nicolas Aragon
+- Slim Bettaieb
+- Loïc Bidoux
+- Olivier Blazy
+- Jean-Christophe Deneuville
+- Edoardo Persichetti
+- Gilles Zémor
+- Jurjen Bos
+- Arnaud Dion
+- Jérôme Lacan
+- Jean-Marc Robert
+- Pascal Véron
+- Paulo L. Barreto
+- Santosh Ghosh
+- Shay Gueron
+- Tim Güneysu
+- Rafael Misoczki
+- Jan Richter-Brokmann
+- Nicolas Sendrier
+- Jean-Pierre Tillich
+- Valentin Vasseur
+implementations:
+- name: ref
+  version: "2025-08-22"
+  folder_name: .
+  compile_opts: "-DHQC_ARCH_REF=1"
+  # FIX: some namespacing is almost definitely required
+  signature_keypair: crypto_kem_keypair
+  signature_enc: crypto_kem_enc
+  signature_dec: crypto_kem_dec
+  # signature_keypair_derand: PQCP_MLKEM_NATIVE_MLKEM512_C_keypair_derand
+  # signature_enc_derand: PQCP_MLKEM_NATIVE_MLKEM512_C_enc_derand
+  sources: src/ref/parsing.c src/ref/gf.c src/ref/vector.c src/ref/gf2x.c
+    src/ref/reed_solomon.c src/ref/reed_muller.c src/ref/hqc.c src/ref/vector.h
+    src/ref/hqc-1/reed_solomon.h src/ref/hqc-1/parameters.h src/ref/hqc.h
+    src/ref/parsing.h src/ref/data_structures.h src/ref/gf.h src/ref/gf2x.h
+# - name: x86_64
+#   version: FIPS203
+#   folder_name: .
+#   compile_opts: -DMLK_CONFIG_PARAMETER_SET=512 -DMLK_CONFIG_FILE="../../integration/liboqs/config_x86_64.h"
+#   signature_keypair: PQCP_MLKEM_NATIVE_MLKEM512_X86_64_keypair
+#   signature_keypair_derand: PQCP_MLKEM_NATIVE_MLKEM512_X86_64_keypair_derand
+#   signature_enc: PQCP_MLKEM_NATIVE_MLKEM512_X86_64_enc
+#   signature_enc_derand: PQCP_MLKEM_NATIVE_MLKEM512_X86_64_enc_derand
+#   signature_dec: PQCP_MLKEM_NATIVE_MLKEM512_X86_64_dec
+#   sources: integration/liboqs/config_x86_64.h integration/liboqs/fips202_glue.h integration/liboqs/fips202x4_glue.h
+#     mlkem/src/cbmc.h mlkem/src/common.h mlkem/src/compress.c mlkem/src/compress.h
+#     mlkem/src/debug.c mlkem/src/debug.h mlkem/src/indcpa.c mlkem/src/indcpa.h mlkem/src/kem.c
+#     mlkem/src/kem.h mlkem/src/native/api.h mlkem/src/native/meta.h mlkem/src/params.h
+#     mlkem/src/poly.c mlkem/src/poly.h mlkem/src/poly_k.c mlkem/src/poly_k.h mlkem/src/randombytes.h
+#     mlkem/src/sampling.c mlkem/src/sampling.h mlkem/src/symmetric.h mlkem/src/sys.h
+#     mlkem/src/verify.c mlkem/src/verify.h mlkem/src/zetas.inc mlkem/src/native/x86_64
+#   supported_platforms:
+#   - architecture: x86_64
+#     operating_systems:
+#     - Linux
+#     - Darwin
+#     required_flags:
+#     - avx2
+#     - bmi2
+#     - popcnt
+# - name: aarch64
+#   version: FIPS203
+#   folder_name: .
+#   compile_opts: -DMLK_CONFIG_PARAMETER_SET=512 -DMLK_CONFIG_FILE="../../integration/liboqs/config_aarch64.h"
+#   signature_keypair: PQCP_MLKEM_NATIVE_MLKEM512_AARCH64_keypair
+#   signature_keypair_derand: PQCP_MLKEM_NATIVE_MLKEM512_AARCH64_keypair_derand
+#   signature_enc: PQCP_MLKEM_NATIVE_MLKEM512_AARCH64_enc
+#   signature_enc_derand: PQCP_MLKEM_NATIVE_MLKEM512_AARCH64_enc_derand
+#   signature_dec: PQCP_MLKEM_NATIVE_MLKEM512_AARCH64_dec
+#   sources: integration/liboqs/config_aarch64.h integration/liboqs/fips202_glue.h integration/liboqs/fips202x4_glue.h
+#     mlkem/src/cbmc.h mlkem/src/common.h mlkem/src/compress.c mlkem/src/compress.h
+#     mlkem/src/debug.c mlkem/src/debug.h mlkem/src/indcpa.c mlkem/src/indcpa.h mlkem/src/kem.c
+#     mlkem/src/kem.h mlkem/src/native/api.h mlkem/src/native/meta.h mlkem/src/params.h
+#     mlkem/src/poly.c mlkem/src/poly.h mlkem/src/poly_k.c mlkem/src/poly_k.h mlkem/src/randombytes.h
+#     mlkem/src/sampling.c mlkem/src/sampling.h mlkem/src/symmetric.h mlkem/src/sys.h
+#     mlkem/src/verify.c mlkem/src/verify.h mlkem/src/zetas.inc mlkem/src/native/aarch64
+#   supported_platforms:
+#   - architecture: arm_8
+#     operating_systems:
+#     - Linux
+#     - Darwin
+#     required_flags:
+#     - asimd
