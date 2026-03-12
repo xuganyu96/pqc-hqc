@@ -7,10 +7,10 @@ length-ciphertext: 4433
 length-secret-key: 2321
 length-shared-secret: 32
 # TODO: not sure
-# length-keypair-seed: 0
-# length-encaps-seed: 0
-# nistkat-sha256: ???
-# testvectors-sha256: ???
+length-keypair-seed: 0
+length-encaps-seed: 0
+nistkat-sha256: xxx
+testvectors-sha256: xxx
 principal-submitters:
 - Philippe Gaborit
 auxiliary-submitters:
