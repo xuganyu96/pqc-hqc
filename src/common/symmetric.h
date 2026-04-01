@@ -7,8 +7,8 @@
 #define HQC_SYMMETRIC_H
 
 #include <stdint.h>
+#include <oqs/sha3.h>
 #include "data_structures.h"
-#include "fips202.h"
 #include "parameters.h"
 
 /**
@@ -18,7 +18,7 @@
  * Alias for the low-level `sha3_512incctx`, used to
  * accumulate input and squeeze out a 512-bit digest.
  */
-typedef sha3_512incctx sha3_512_ctx;
+typedef OQS_SHA3_sha3_512_inc_ctx sha3_512_ctx;
 
 /**
  * @typedef sha3_256_ctx
@@ -27,7 +27,7 @@ typedef sha3_512incctx sha3_512_ctx;
  * Alias for the low-level `sha3_256incctx`, used to
  * accumulate input and squeeze out a 256-bit digest.
  */
-typedef sha3_256incctx sha3_256_ctx;
+typedef OQS_SHA3_sha3_256_inc_ctx sha3_256_ctx;
 
 /**
  * @typedef shake256_xof_ctx
@@ -36,7 +36,7 @@ typedef sha3_256incctx sha3_256_ctx;
  * Alias for `shake256incctx`, used to absorb input and
  * generate arbitrary-length XOF output.
  */
-typedef shake256incctx shake256_xof_ctx;
+typedef OQS_SHA3_shake256_inc_ctx shake256_xof_ctx;
 
 /** @def HQC_PRNG_DOMAIN
  *  @brief Domain separator for HQC prng function.
