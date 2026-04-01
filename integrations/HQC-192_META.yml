@@ -52,3 +52,7 @@ implementations:
     src/ref/reed_solomon.c src/ref/reed_muller.c src/ref/hqc.c src/ref/vector.h
     src/ref/hqc-3/reed_solomon.h src/ref/hqc-3/parameters.h src/ref/hqc.h
     src/ref/parsing.h src/ref/data_structures.h src/ref/gf.h src/ref/gf2x.h
+    src/common/fft.h src/common/crypto_memset.h src/common/code.h
+    src/common/reed_muller.h src/common/kem.c src/common/hqc-3/api.h
+    src/common/symmetric.h src/common/crypto_memset.c src/common/fft.c
+    src/common/code.c src/common/symmetric.c
