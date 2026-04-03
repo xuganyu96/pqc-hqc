@@ -10,7 +10,7 @@ length-shared-secret: 32
 length-keypair-seed: 0
 length-encaps-seed: 0
 # FIX: fill out real NISTKAT and TESTVECTORS
-nistkat-sha256: xxx
+nistkat-sha256: 4f5efbf077e2f3eded342c6b9bc689a8d41ee8f8cd13ef42df1d981616230206
 testvectors-sha256: xxx
 principal-submitters:
 - Philippe Gaborit
