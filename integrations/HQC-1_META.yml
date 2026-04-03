@@ -1,4 +1,4 @@
-name: HQC-128
+name: HQC-1
 type: kem
 claimed-nist-level: 1
 claimed-security: IND-CCA2

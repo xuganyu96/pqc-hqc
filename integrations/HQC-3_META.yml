@@ -1,4 +1,4 @@
-name: HQC-192
+name: HQC-3
 type: kem
 claimed-nist-level: 3
 claimed-security: IND-CCA2
