@@ -41,11 +41,10 @@ implementations:
 - name: ref
   version: "2025-08-22"
   folder_name: .
-  compile_opts: "-DHQC_ARCH_REF=1"
-  # FIX: namespacing is required
-  signature_keypair: crypto_kem_keypair
-  signature_enc: crypto_kem_enc
-  signature_dec: crypto_kem_dec
+  compile_opts: "-DHQC_ARCH_REF=1 -DPQCHQC_NAMESPACE_PREFIX=PQCHQC_HQC1_C_"
+  signature_keypair: PQCHQC_HQC1_C_crypto_kem_keypair
+  signature_enc: PQCHQC_HQC1_C_crypto_kem_enc
+  signature_dec: PQCHQC_HQC1_C_crypto_kem_dec
   signature_keypair_derand:
   signature_enc_derand:
   sources: src/ref/parsing.c src/ref/gf.c src/ref/vector.c src/ref/gf2x.c
@@ -55,4 +54,4 @@ implementations:
     src/common/fft.h src/common/crypto_memset.h src/common/code.h
     src/common/reed_muller.h src/common/kem.c src/common/hqc-1/api.h
     src/common/symmetric.h src/common/crypto_memset.c src/common/fft.c
-    src/common/code.c src/common/symmetric.c
+    src/common/code.c src/common/symmetric.c src/common/namespace.h
