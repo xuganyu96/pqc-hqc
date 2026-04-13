@@ -9,8 +9,9 @@ length-shared-secret: 32
 # TODO: not sure
 length-keypair-seed: 0
 length-encaps-seed: 0
-# FIX: fill out real NISTKAT and TESTVECTORS
-nistkat-sha256: 4f5efbf077e2f3eded342c6b9bc689a8d41ee8f8cd13ef42df1d981616230206
+# NOTE: for test_kat (one test case):
+# head -8 kats/ref/hqc-3/PQCkemKAT_4602.rsp | tail -6 | sha256sum
+nistkat-sha256: 87bf16803c53f3add0004097b8aa924053d9cd2c5fffc443fe3742ee3254428b
 testvectors-sha256: xxx
 principal-submitters:
 - Philippe Gaborit
