@@ -6,11 +6,12 @@ length-public-key: 7237
 length-ciphertext: 14421
 length-secret-key: 7333
 length-shared-secret: 32
-# TODO: not sure
 length-keypair-seed: 0
 length-encaps-seed: 0
 # NOTE: for test_kat (one test case):
-# head -8 kats/ref/hqc-3/PQCkemKAT_4602.rsp | tail -6 | sha256sum
+# head -8 kats/ref/hqc-5/PQCkemKAT_7333.rsp | tail -6 | sha256sum
+# for test_kat_all (100 test cases):
+# head -701 kats/ref/hqc-5/PQCkemKAT_7333.rsp | tail -699 | sha256sum
 nistkat-sha256: 87bf16803c53f3add0004097b8aa924053d9cd2c5fffc443fe3742ee3254428b
 testvectors-sha256: xxx
 principal-submitters:
