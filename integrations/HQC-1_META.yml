@@ -41,7 +41,7 @@ auxiliary-submitters:
 - Valentin Vasseur
 implementations:
 - name: ref
-  version: "2025-08-22"
+  version: "https://gitlab.com/pqc-hqc/hqc@161cd4f"
   folder_name: .
   compile_opts: "-DHQC_ARCH_REF=1 -DPQCHQC_NAMESPACE_PREFIX=PQCHQC_HQC1_C_"
   signature_keypair: PQCHQC_HQC1_C_crypto_kem_keypair
