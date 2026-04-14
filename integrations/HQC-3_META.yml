@@ -49,9 +49,6 @@ implementations:
   signature_dec: PQCHQC_HQC3_C_crypto_kem_dec
   signature_keypair_derand:
   signature_enc_derand:
-  no-secret-dependent-branching-claimed: true
-  no-secret-dependent-branching-checked-by-valgrind: false
-  large-stack-usage: false
   sources: src/ref/parsing.c src/ref/gf.c src/ref/vector.c src/ref/gf2x.c
     src/ref/reed_solomon.c src/ref/reed_muller.c src/ref/hqc.c src/ref/vector.h
     src/ref/hqc-3/reed_solomon.h src/ref/hqc-3/parameters.h src/ref/hqc.h
