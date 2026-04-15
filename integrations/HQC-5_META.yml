@@ -43,7 +43,7 @@ implementations:
 - name: ref
   version: "https://gitlab.com/pqc-hqc/hqc@161cd4f"
   folder_name: .
-  compile_opts: "-DHQC_ARCH_REF=1 -DPQCHQC_NAMESPACE_PREFIX=PQCHQC_HQC5_C_"
+  compile_opts: "-DHQC_ARCH_REF=1 -DPQCHQC_NAMESPACE_PREFIX=PQCHQC_HQC5_C_ -DUSE_OQS_RANDOMBYTES"
   signature_keypair: PQCHQC_HQC5_C_crypto_kem_keypair
   signature_enc: PQCHQC_HQC5_C_crypto_kem_enc
   signature_dec: PQCHQC_HQC5_C_crypto_kem_dec
