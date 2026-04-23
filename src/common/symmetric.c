@@ -143,7 +143,17 @@ void hash_h(uint8_t *output, const uint8_t ek_kem[PUBLIC_KEY_BYTES]) {
  */
 void hash_g(uint8_t *output, const uint8_t hash_ek_kem[SEED_BYTES], const uint8_t m[PARAM_SECURITY_BYTES],
             const uint8_t salt[SALT_BYTES]) {
-    /* TODO: does avoiding incremental update work */
+    /* TODO: For liboqs integration, hash_g implementation has been modified
+     * There are some unexpected dispatch errors under liboqs/src/common/sha3
+     * that causes intermittent GitHub Action test failures. Due to the
+     * difficulty of debugging on GitHub action, I chose this shortcut of
+     * replacing incremental API with a single hash over a continuous strip of
+     * memory. There might be performance and stack memory usage penalty
+     * associated with this approach, but I deemed it acceptable.
+     *
+     * FIX: we need to eventually figure out what happened with Keccak dispatch
+     * and restore the usage of incremental API
+     */
     uint8_t i_domain = HQC_G_FCT_DOMAIN;
     uint8_t input[SEED_BYTES + PARAM_SECURITY_BYTES + SALT_BYTES + 1];
     size_t offset = 0;
