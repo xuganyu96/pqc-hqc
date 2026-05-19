@@ -143,7 +143,7 @@ void hash_h(uint8_t *output, const uint8_t ek_kem[PUBLIC_KEY_BYTES]) {
  */
 void hash_g(uint8_t *output, const uint8_t hash_ek_kem[SEED_BYTES], const uint8_t m[PARAM_SECURITY_BYTES],
             const uint8_t salt[SALT_BYTES]) {
-#if 1
+#ifndef _OQS_HQC_USE_SHA3_512_INC_HASH_G
     /* TODO: For liboqs integration, hash_g implementation has been modified
      * There are some unexpected dispatch errors under liboqs/src/common/sha3
      * that causes intermittent GitHub Action test failures. Due to the
