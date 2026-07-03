@@ -13,7 +13,7 @@ length-encaps-seed: 0
 # for test_kat_all (100 test cases):
 # head -701 kats/ref/hqc-3/PQCkemKAT_4602.rsp | tail -699 | sha256sum
 nistkat-sha256: b88d4cfe517446854b5d3c85e6602518a526c5eb95571348ce4ab5915faa05b6
-testvectors-sha256: b88d4cfe517446854b5d3c85e6602518a526c5eb95571348ce4ab5915faa05b6
+testvectors-sha256: xxx
 principal-submitters:
 - Philippe Gaborit
 auxiliary-submitters:
